@@ -80,13 +80,8 @@ class State:
         state[key] = value
         self.storage.save_state(state)
 
-    def get_state(self, key: str) -> Any:
+    def get_state(self, key: str) -> datetime.datetime:
         """Получить состояние по определённому ключу."""
-        state = self.storage.retrieve_state()
-        return state.get(key, None)
-
-    def get_last_state(self) -> datetime.datetime:
-        """Получить состояние по определённому ключу."""
-        state = self.storage.retrieve_state()
-        state = state.get('modified', None)
+        whole_state = self.storage.retrieve_state()
+        state = whole_state.get(key, None)
         return datetime.datetime.strptime(state, '%Y-%m-%d %H:%M:%S.%f%z') if state else datetime.datetime.min
