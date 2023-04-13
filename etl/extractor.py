@@ -102,7 +102,7 @@ class PostgresReader:
                 fw.modified as modified
                 FROM content.film_work fw
                 LEFT JOIN content.person_film_work pfw ON pfw.film_work_id = fw.id
-                JOIN content.person p1 ON p1.id = pfw.person_id and p1.id = any(%s)
+                JOIN content.person p1 ON p1.id = pfw.person_id and p1.id = any(%s::uuid[])
                 LEFT JOIN content.person p ON p.id = pfw.person_id
                 LEFT JOIN content.genre_film_work gfw ON gfw.film_work_id = fw.id
                 LEFT JOIN content.genre g ON g.id = gfw.genre_id
