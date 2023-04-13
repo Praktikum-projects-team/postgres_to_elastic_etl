@@ -19,7 +19,7 @@ state = State(storage)
 
 
 class PostgresReader:
-    def __init__(self, connection_params: PostgresConfig, batch_size: int, state: State):
+    def __init__(self, connection_params: PostgresConfig, batch_size, state):
         self.connection_params = connection_params
         self.batch_size = batch_size
         self.state = state
@@ -65,22 +65,24 @@ class PostgresReader:
             self.set_last_datetime('filmwork', data[-1]['modified'])
         logging.info('filmworks reading finished')
 
-    def _get_persons_ids(self, cursor):
-        person_statement = '''
-            SELECT id, modified
-            FROM content.person
-            WHERE modified > %s
-            ORDER BY modified
-        '''
-        cursor.execute(person_statement, [self.get_last_datetime('person')])
-        while persons := cursor.fetchmany():
-            print(persons)
-            yield [person['id'] for person in persons]
-            self.set_last_datetime('person', persons[-1]['modified'])
-
     def _read_modified_person_filmworks(self, cursor):
         logging.info('persons reading started')
-        filmworks_statement = '''
+        while True:
+            person_statement = '''
+                SELECT id, modified
+                FROM content.person
+                WHERE modified > %s
+                ORDER BY modified
+                LIMIT 100;         
+            '''
+            cursor.execute(person_statement, [self.get_last_datetime('person')])
+            persons = cursor.fetchall()
+            if not persons:
+                break
+            new_state = persons[-1]['modified']
+            persons_ids = [person['id'] for person in persons]
+
+            filmworks_statement = '''
                 SELECT
                 fw.id as id, 
                 fw.title, 
@@ -100,7 +102,7 @@ class PostgresReader:
                 fw.modified as modified
                 FROM content.film_work fw
                 LEFT JOIN content.person_film_work pfw ON pfw.film_work_id = fw.id
-                JOIN content.person p1 ON p1.id = pfw.person_id and p1.id = any(%s::uuid[])
+                JOIN content.person p1 ON p1.id = pfw.person_id and p1.id = any(%s)
                 LEFT JOIN content.person p ON p.id = pfw.person_id
                 LEFT JOIN content.genre_film_work gfw ON gfw.film_work_id = fw.id
                 LEFT JOIN content.genre g ON g.id = gfw.genre_id
@@ -108,23 +110,20 @@ class PostgresReader:
                 GROUP BY fw.id
                 ORDER BY fw.modified;
             '''
-        for persons_ids in self._get_persons_ids(cursor):
             cursor.execute(filmworks_statement, [persons_ids, self.get_last_datetime('filmwork')])
             while data := cursor.fetchmany():
-                print(data)
                 yield data
 
-            # while person_ids := self._get_persons_ids(cursor):
-            #     yield self._get_filmworks_by_person_ids(cursor, person_ids)
-
+            self.set_last_datetime('person', new_state)
         logging.info('persons reading finished')
 
     @backoff.on_exception(backoff.expo, psycopg2.OperationalError, max_time=300)
     def read_data(self):
+
         with closing(psycopg2.connect(**(self.connection_params.dict()), cursor_factory=RealDictCursor)) as connection:
             cursor = connection.cursor()
             cursor.arraysize = self.batch_size
-            yield self._read_modified_person_filmworks(cursor)
+            # yield self._read_modified_person_filmworks(cursor)
             yield self._read_modified_filmworks(cursor)
 
 
