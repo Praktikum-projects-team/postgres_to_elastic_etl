@@ -23,13 +23,12 @@ services:
     volumes:
       - elasticsearch-data:/usr/share/elasticsearch/data
   etl:
-    build: etl
+    build: .
     env_file:
       - ./.env
     depends_on:
-      - nginx
-      - service
-      - elasticsearch
+      - postgres
+      - elastic
 volumes:
   elasticsearch-data:
     driver: local
