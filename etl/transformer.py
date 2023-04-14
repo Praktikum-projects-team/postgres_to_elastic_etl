@@ -17,7 +17,7 @@
 
 
 def transform(batch: dict):
-    transformed_data = {}
+    transformed_data = []
     for filmwork in batch:
         filmwork_transformed = {
             'id': filmwork['id'],
@@ -39,5 +39,5 @@ def transform(batch: dict):
                 } for person in filmwork['persons'] if person['role'] == 'writer'
             ],
         }
-        transformed_data[filmwork['id']] = filmwork_transformed
+        transformed_data.append(filmwork_transformed)
     return transformed_data
