@@ -49,7 +49,7 @@
 docker pull ghcr.io/yp-middle-python-24/elasticsearch:8.7.0
 docker-compose up -d
 
-curl -XPUT http://127.0.0.1:9200/movies -H 'Content-Type: application/json' -d'
+curl -XPUT http://127.0.0.1:9200/movie -H 'Content-Type: application/json' -d'
 {
   "settings": {
     "refresh_interval": "1s",

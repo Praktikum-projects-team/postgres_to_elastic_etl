@@ -22,6 +22,14 @@ services:
       - "ES_JAVA_OPTS=-Xms200m -Xmx200m"
     volumes:
       - elasticsearch-data:/usr/share/elasticsearch/data
+  etl:
+    build: etl
+    env_file:
+      - ./.env
+    depends_on:
+      - nginx
+      - service
+      - elasticsearch
 volumes:
   elasticsearch-data:
     driver: local

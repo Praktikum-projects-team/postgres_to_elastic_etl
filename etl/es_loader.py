@@ -16,7 +16,7 @@ class ElasticsearchLoader:
 
     @backoff.on_exception(backoff.expo, ConnectionError, max_time=300)
     def load_data(self, data: dict) -> tuple[int, list]:
-        query = [{'_index': 'movies', '_id': doc['id'], '_source': doc} for doc in data]
+        query = [{'_index': 'movie', '_id': doc['id'], '_source': doc} for doc in data]
         rows_count, errors = helpers.bulk(self.es, query)
         if errors:
             logging.error('loading data error:', extra={'query': query, 'errors': errors})
