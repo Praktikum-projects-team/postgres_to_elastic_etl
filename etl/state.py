@@ -1,10 +1,7 @@
 import abc
 import datetime
 import json
-# from pathlib import Path
 from typing import Any
-
-# from redis import Redis
 
 
 class BaseStorage(abc.ABC):
@@ -44,28 +41,7 @@ class JsonFileStorage(BaseStorage):
             with open(self.file_path, 'r') as file:
                 return json.load(file)
         except (FileNotFoundError, json.decoder.JSONDecodeError):
-            # Path(self.file_path).touch()
             return {}
-
-
-# class RedisStorage(BaseStorage):
-#     def __init__(self, redis_adapter: Redis):
-#         self.redis_adapter = redis_adapter
-#
-#     def save_state(self, state: Dict[str, Any]) -> None:
-#         ...
-#         # with open(self.file_path, "w") as file:
-#         #     json.dump(state, file)
-#
-#     def retrieve_state(self) -> Dict[str, Any]:
-#         ...
-#         # if not os.path.exists(self.file_path):
-#         # try:
-#         #     with open(self.file_path, 'r') as file:
-#         #         return json.load(file)
-#         # except FileNotFoundError:
-#         #     # Path(self.file_path).touch()
-#         #     return {}
 
 
 class State:

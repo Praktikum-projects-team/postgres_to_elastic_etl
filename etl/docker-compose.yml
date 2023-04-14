@@ -1,17 +1,17 @@
 version: '3'
 services:
-#  postgres:
-#    image: "postgres:13"
-#    env_file:
-#      - ./.env
-#    environment:
-#      POSTGRES_DB: ${DB_NAME}
-#      POSTGRES_USER: ${DB_USER}
-#      POSTGRES_PASSWORD: ${DB_PASSWORD}
-#    volumes:
-#      - $HOME/postgresql/data:/var/lib/postgresql/data
-#    ports:
-#      - "5434:5432"
+  postgres:
+    image: "postgres:13"
+    env_file:
+      - ./.env
+    environment:
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - $HOME/postgresql/data:/var/lib/postgresql/data
+    ports:
+      - "5434:5432"
   elastic:
     image: ghcr.io/yp-middle-python-24/elasticsearch:8.7.0
     ports:

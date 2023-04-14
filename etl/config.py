@@ -2,6 +2,7 @@ from dotenv import load_dotenv
 from pydantic import (
     BaseSettings,
     Field,
+    FilePath
 )
 
 load_dotenv()
@@ -18,5 +19,6 @@ class PostgresConfig(BaseSettings):
 class MainConfig(BaseSettings):
     es_host: str = Field(..., env='ES_HOST')
     batch_size: int = Field(..., env='BATCH_SIZE')
+    state_file: str = FilePath(..., env='STATE_FILE')
     etl_run_interval: int = Field(..., env='ETL_RUN_INTERVAL')  # seconds
 

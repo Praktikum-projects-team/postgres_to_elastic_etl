@@ -20,7 +20,7 @@ if __name__ == '__main__':
     logging.basicConfig(level=logging.INFO)
     config = MainConfig()
 
-    storage = JsonFileStorage('state_file.json')
+    storage = JsonFileStorage(config.state_file)
     state = State(storage)
     reader = PostgresReader(connection_params=PostgresConfig(), state=state, batch_size=config.batch_size)
     loader = ElasticsearchLoader(os.environ.get('ES_HOST'))
