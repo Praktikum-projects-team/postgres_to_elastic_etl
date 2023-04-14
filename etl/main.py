@@ -1,8 +1,12 @@
-from config import PostgresConfig
-from es_loader import ElasticsearchLoader
-from extractor import PostgresReader, state
-from transformer import transform
 import os
+import logging
+from time import sleep
+
+from config import PostgresConfig, MainConfig
+from state import State, JsonFileStorage
+from es_loader import ElasticsearchLoader
+from extractor import PostgresReader
+from transformer import transform
 
 
 def run_etl(pg_reader: PostgresReader, es_loader: ElasticsearchLoader):
@@ -13,8 +17,16 @@ def run_etl(pg_reader: PostgresReader, es_loader: ElasticsearchLoader):
 
 
 if __name__ == '__main__':
-    pg_reader = PostgresReader(connection_params=PostgresConfig(), state=state, batch_size=3)
-    es_loader = ElasticsearchLoader(os.environ.get('ES_HOST'))
+    logging.basicConfig(level=logging.INFO)
+    config = MainConfig()
+
+    storage = JsonFileStorage('state_file.json')
+    state = State(storage)
+    reader = PostgresReader(connection_params=PostgresConfig(), state=state, batch_size=config.batch_size)
+    loader = ElasticsearchLoader(os.environ.get('ES_HOST'))
+
     while True:
-        run_etl()
-        sleep()
+        logging.info('etl started')
+        run_etl(pg_reader=reader, es_loader=loader)
+        logging.info('etl finished')
+        sleep(config.etl_run_interval)
