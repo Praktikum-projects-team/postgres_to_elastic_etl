@@ -56,7 +56,7 @@ class PostgresReader:
 
             entity_ids = [entity['id'] for entity in entities]
             cursor.execute(fw_statement, [entity_ids, self.get_last_datetime('filmwork')])
-            while data := cursor.fetchmany():
+            while data := cursor.fetchmany():  # как default использует cursor.arraysize, который я задаю перед вызовом
                 yield data
 
             self.set_last_datetime(table, new_state)
@@ -67,8 +67,8 @@ class PostgresReader:
         """read modified data from all tables"""
 
         with closing(psycopg2.connect(**(self.connection_params.dict()), cursor_factory=RealDictCursor)) as connection:
-            cursor = connection.cursor()
-            cursor.arraysize = self.batch_size
-            yield self._read_modified_secondary_table(cursor, table='person', fw_statement=person_fw_statement)
-            yield self._read_modified_secondary_table(cursor, table='genre', fw_statement=genre_fw_statement)
-            yield self._read_modified_filmworks(cursor)
+            with connection.cursor() as cursor:
+                cursor.arraysize = self.batch_size
+                yield self._read_modified_secondary_table(cursor, table='person', fw_statement=person_fw_statement)
+                yield self._read_modified_secondary_table(cursor, table='genre', fw_statement=genre_fw_statement)
+                yield self._read_modified_filmworks(cursor)
