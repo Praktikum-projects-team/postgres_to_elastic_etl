@@ -7,8 +7,8 @@ import psycopg2
 from psycopg2.extras import RealDictCursor
 
 from config import PostgresConfig
-from sql_statements import fw_statement, person_fw_statement, genre_fw_statement
-from state import State
+from extraction.sql_statements import fw_statement, person_fw_statement, genre_fw_statement
+from extraction.state import State
 
 
 class PostgresReader:
