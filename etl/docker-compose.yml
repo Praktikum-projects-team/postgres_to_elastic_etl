@@ -21,8 +21,8 @@ services:
       - discovery.type=single-node
       - xpack.security.enabled=false
       - "ES_JAVA_OPTS=-Xms200m -Xmx200m"
-#    volumes:
-#      - elasticsearch-data:/usr/share/elasticsearch/data
+    volumes:
+      - elasticsearch-data:/usr/share/elasticsearch/data
   etl:
     build: .
     env_file:
@@ -30,6 +30,6 @@ services:
     depends_on:
       - postgres
       - elastic
-#volumes:
-#  elasticsearch-data:
-#    driver: local
+volumes:
+  elasticsearch-data:
+    driver: local
