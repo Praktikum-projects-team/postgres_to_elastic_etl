@@ -23,7 +23,7 @@ if __name__ == '__main__':
     storage = JsonFileStorage(config.state_file)
     state = State(storage)
     reader = PostgresReader(connection_params=PostgresConfig(), state=state, batch_size=config.batch_size)
-    loader = ElasticsearchLoader(os.environ.get('ES_HOST'))
+    loader = ElasticsearchLoader(config.es_host)
 
     while True:
         logging.info('etl started')
