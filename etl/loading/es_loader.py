@@ -3,7 +3,7 @@ import logging
 import backoff
 from elasticsearch import Elasticsearch, helpers
 
-from es_index import movies_mappings, movies_settings
+from loading.es_index import movies_mappings, movies_settings
 
 
 class ElasticsearchLoader:

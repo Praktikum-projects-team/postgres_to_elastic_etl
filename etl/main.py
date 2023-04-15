@@ -1,10 +1,9 @@
-import os
 import logging
 from time import sleep
 
 from config import PostgresConfig, MainConfig
 from state import State, JsonFileStorage
-from es_loader import ElasticsearchLoader
+from loading.es_loader import ElasticsearchLoader
 from extractor import PostgresReader
 from transformer import transform
 
