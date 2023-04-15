@@ -9,4 +9,4 @@ RUN  pip install --upgrade pip \
 
 COPY . .
 
-CMD python main.py
+CMD sleep 10 && python main.py
