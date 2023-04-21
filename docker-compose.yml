@@ -9,8 +9,8 @@ services:
       POSTGRES_USER: ${DB_USER}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
     volumes:
-      - ./extraction/movies_dump.sql:/docker-entrypoint-initdb.d/movies_dump.sql
-#      - $HOME/postgresql/data:/var/lib/postgresql/data
+      - ./etl/extraction/movies_dump.sql:/docker-entrypoint-initdb.d/movies_dump.sql
+      - $HOME/postgresql/data:/var/lib/postgresql/data
     ports:
       - "5432:5432"
   elastic:
@@ -24,7 +24,7 @@ services:
     volumes:
       - elasticsearch-data:/usr/share/elasticsearch/data
   etl:
-    build: .
+    build: etl
     env_file:
       - ./.env
     depends_on:

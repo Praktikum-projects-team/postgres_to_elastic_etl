@@ -1,11 +1,8 @@
-from dotenv import load_dotenv
 from pydantic import (
     BaseSettings,
     Field,
     FilePath
 )
-
-load_dotenv()
 
 
 class PostgresConfig(BaseSettings):

@@ -1,6 +1,6 @@
+import collections
 import datetime
 import logging
-from contextlib import closing
 
 import backoff
 import psycopg2
@@ -62,13 +62,21 @@ class PostgresReader:
             self.set_last_datetime(table, new_state)
         logging.info(f'{table} reading finished')
 
-    @backoff.on_exception(backoff.expo, psycopg2.OperationalError, max_time=300)
-    def read_data(self):
-        """read modified data from all tables"""
-
-        with closing(psycopg2.connect(**(self.connection_params.dict()), cursor_factory=RealDictCursor)) as connection:
+    def _gen_data(self, connection):
+        try:
             with connection.cursor() as cursor:
                 cursor.arraysize = self.batch_size
                 yield self._read_modified_secondary_table(cursor, table='person', fw_statement=person_fw_statement)
                 yield self._read_modified_secondary_table(cursor, table='genre', fw_statement=genre_fw_statement)
                 yield self._read_modified_filmworks(cursor)
+        finally:
+            connection.close()
+
+    @backoff.on_exception(
+        backoff.expo,
+        psycopg2.OperationalError,
+        max_time=300,
+    )
+    def read_data(self) -> collections.abc.Generator:
+        with psycopg2.connect(**(self.connection_params.dict()), cursor_factory=RealDictCursor) as connection:
+            return self._gen_data(connection=connection)
