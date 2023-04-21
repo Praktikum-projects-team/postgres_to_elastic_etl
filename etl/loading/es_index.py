@@ -1,4 +1,4 @@
-movies_settings = {
+common_index_settings = {
     "refresh_interval": "1s",
     "analysis": {
         "filter": {

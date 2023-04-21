@@ -4,7 +4,7 @@ import backoff
 import elastic_transport
 from elasticsearch import Elasticsearch, helpers
 
-from loading.es_index import movies_mappings, movies_settings
+from loading.es_index import movies_mappings, common_index_settings
 
 
 class ElasticsearchLoader:
@@ -18,7 +18,7 @@ class ElasticsearchLoader:
         if self.es.indices.exists(index=self.index_name):
             return
         logging.info('index does not exist, creating...')
-        self.es.indices.create(index=self.index_name, mappings=movies_mappings, settings=movies_settings)
+        self.es.indices.create(index=self.index_name, mappings=movies_mappings, settings=common_index_settings)
         logging.info('index created')
 
     @backoff.on_exception(backoff.expo, (ConnectionError, elastic_transport.ConnectionError), max_time=300)
