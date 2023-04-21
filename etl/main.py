@@ -12,7 +12,7 @@ def run_etl(pg_reader: PostgresReader, es_loader: ElasticsearchLoader):
     for table_data in pg_reader.read_data():
         for batch in table_data:
             transformed_data = transform(batch)
-            es_loader.load_data(transformed_data)
+            es_loader.load_data('movies', transformed_data)
 
 
 if __name__ == '__main__':

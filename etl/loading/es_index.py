@@ -104,3 +104,39 @@ movies_mappings = {
         }
     }
 }
+
+persons_mappings = {
+    "dynamic": "strict",
+    "properties": {
+        "id": {
+            "type": "keyword"
+        },
+        "full_name": {
+            "type": "text",
+            "analyzer": "ru_en",
+            "fields": {
+                "raw": {
+                    "type": "keyword"
+                }
+            }
+        },
+        "films": {
+            "type": "nested",
+            "dynamic": "strict",
+            "properties": {
+                "id": {
+                    "type": "keyword"
+                },
+                "role": {
+                    "type": "text",
+                    "analyzer": "ru_en"
+                }
+            }
+        }
+    }
+}
+
+index_mappings = {
+    "movies": movies_mappings,
+    "persons": persons_mappings,
+}
