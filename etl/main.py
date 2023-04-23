@@ -2,15 +2,14 @@ import logging
 from time import sleep
 
 from config import PostgresConfig, MainConfig
-from extraction.person_extractor import PersonReader
 from extraction.state import State, JsonFileStorage
 from loading.es_loader import ElasticsearchLoader
-from extraction.fw_extractor import PostgresReader
+from extraction.fw_extractor import FilmworkReader, PersonReader
 from transformer import transform_filmwork
 
 
 def run_etl(
-        pg_reader: PostgresReader,
+        pg_reader: FilmworkReader,
         es_loader: ElasticsearchLoader,
         es_index: str,
         transformer: callable = None,
@@ -29,7 +28,7 @@ if __name__ == '__main__':
     storage = JsonFileStorage(config.state_file)
     state = State(storage)
 
-    fw_reader = PostgresReader(connection_params=PostgresConfig(), state=state, batch_size=config.batch_size)
+    fw_reader = FilmworkReader(connection_params=PostgresConfig(), state=state, batch_size=config.batch_size)
     person_reader = PersonReader(connection_params=PostgresConfig(), state=state, batch_size=config.batch_size)
 
     loader = ElasticsearchLoader(config.es_host)
