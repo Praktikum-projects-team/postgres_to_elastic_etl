@@ -50,3 +50,25 @@ genre_fw_statement = select_fw_part + '''
     GROUP BY fw.id
     ORDER BY fw.modified;
 '''
+
+
+person_statement = '''
+    SELECT
+    p.id,
+    p.full_name,
+    COALESCE (
+       json_agg(
+           DISTINCT jsonb_build_object(
+               'id', pfw.film_work_id,
+               'role', pfw.role
+           )
+       ) FILTER (WHERE pfw.film_work_id is not null),
+       '[]'
+    ) as films,
+    p.modified
+    FROM content.person p
+    LEFT JOIN content.person_film_work pfw ON pfw.person_id = p.id
+    WHERE p.modified > %s
+    GROUP BY p.id
+    ORDER BY p.modified;
+'''

@@ -11,6 +11,8 @@ class StateModel(BaseModel):
     genre: Optional[datetime.datetime] = datetime.datetime.min
     filmwork: Optional[datetime.datetime] = datetime.datetime.min
 
+    person_index_modified: Optional[datetime.datetime] = datetime.datetime.min
+
 
 class BaseStorage(abc.ABC):
     """Абстрактное хранилище состояния.

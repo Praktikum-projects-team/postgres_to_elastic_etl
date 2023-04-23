@@ -138,5 +138,5 @@ persons_mappings = {
 
 index_mappings = {
     "movies": movies_mappings,
-    "persons": persons_mappings,
+    "person": persons_mappings,
 }
