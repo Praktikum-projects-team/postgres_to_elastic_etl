@@ -21,7 +21,7 @@ class ElasticsearchLoader:
         logging.info('index created')
 
     @backoff.on_exception(backoff.expo, (ConnectionError, elastic_transport.ConnectionError), max_time=300)
-    def load_data(self, index_name: str, data: dict):
+    def load_data(self, index_name: str, data: list[dict]):
         self._create_index_if_not_exists(index_name)
         actions = [{'_index': index_name, '_id': doc['id'], '_source': doc} for doc in data]
         rows_count, errors = helpers.bulk(self.es, actions=actions)

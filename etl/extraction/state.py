@@ -1,7 +1,15 @@
 import abc
 import datetime
 import json
-from typing import Any
+from typing import Any, Optional
+
+from pydantic import BaseModel
+
+
+class StateModel(BaseModel):
+    person: Optional[datetime.datetime] = datetime.datetime.min
+    genre: Optional[datetime.datetime] = datetime.datetime.min
+    filmwork: Optional[datetime.datetime] = datetime.datetime.min
 
 
 class BaseStorage(abc.ABC):
@@ -18,8 +26,12 @@ class BaseStorage(abc.ABC):
         """Сохранить состояние в хранилище."""
 
     @abc.abstractmethod
-    def retrieve_state(self) -> dict[str, Any]:
+    def retrieve_raw_state(self) -> dict[str, Any]:
         """Получить состояние из хранилища."""
+
+    def retrieve_state(self) -> StateModel:
+        raw_state = self.retrieve_raw_state()
+        return StateModel(**raw_state)
 
 
 class JsonFileStorage(BaseStorage):
@@ -36,7 +48,7 @@ class JsonFileStorage(BaseStorage):
         with open(self.file_path, "w") as file:
             json.dump(state, file, default=str)
 
-    def retrieve_state(self) -> dict[str, Any]:
+    def retrieve_raw_state(self) -> dict[str, Any]:
         try:
             with open(self.file_path, 'r') as file:
                 return json.load(file)
@@ -52,12 +64,11 @@ class State:
 
     def set_state(self, key: str, value: Any) -> None:
         """Установить состояние для определённого ключа."""
-        state = self.storage.retrieve_state()
+        state = self.storage.retrieve_raw_state()
         state[key] = value
         self.storage.save_state(state)
 
-    def get_state(self, key: str) -> datetime.datetime:
+    def get_state(self, key: str) -> Any:
         """Получить состояние по определённому ключу."""
         whole_state = self.storage.retrieve_state()
-        state = whole_state.get(key, None)
-        return datetime.datetime.strptime(state, '%Y-%m-%d %H:%M:%S.%f%z') if state else datetime.datetime.min
+        return getattr(whole_state, key)
