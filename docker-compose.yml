@@ -13,6 +13,12 @@ services:
       - $HOME/postgresql/data:/var/lib/postgresql/data
     ports:
       - "5432:5432"
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U app -d movies_database" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    restart: always
   elastic:
     image: ghcr.io/yp-middle-python-24/elasticsearch:8.7.0
     ports:
@@ -21,8 +27,15 @@ services:
       - discovery.type=single-node
       - xpack.security.enabled=false
       - "ES_JAVA_OPTS=-Xms200m -Xmx200m"
+    healthcheck:
+      test: [ "CMD-SHELL", "curl -f 'http://elastic:9200/_cat/health'" ]
+      interval: 10s
+      timeout: 30s
+      retries: 2
     volumes:
-      - elasticsearch-data:/usr/share/elasticsearch/data
+      - $HOME/elasticsearch/data:/usr/share/elasticsearch/data
+    depends_on:
+      - postgres
   etl:
     build: etl
     env_file:
@@ -30,6 +43,4 @@ services:
     depends_on:
       - postgres
       - elastic
-volumes:
-  elasticsearch-data:
-    driver: local
+    restart: always

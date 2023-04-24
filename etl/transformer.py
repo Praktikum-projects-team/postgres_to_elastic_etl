@@ -1,4 +1,4 @@
-def transform(batch: dict) -> list[dict]:
+def transform_filmwork(batch: list[dict]) -> list[dict]:
     transformed_data = []
     for filmwork in batch:
         filmwork_transformed = {
@@ -23,3 +23,4 @@ def transform(batch: dict) -> list[dict]:
         }
         transformed_data.append(filmwork_transformed)
     return transformed_data
+
