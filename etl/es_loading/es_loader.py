@@ -4,7 +4,7 @@ import backoff
 import elastic_transport
 from elasticsearch import Elasticsearch, helpers
 
-from loading.es_index import index_mappings, common_index_settings
+from es_loading.es_index import index_mappings, common_index_settings
 
 
 class ElasticsearchLoader:

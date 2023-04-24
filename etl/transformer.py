@@ -24,6 +24,3 @@ def transform_filmwork(batch: list[dict]) -> list[dict]:
         transformed_data.append(filmwork_transformed)
     return transformed_data
 
-
-# def transform_person(batch: list[dict]) -> list[dict]:
-#     return batch

@@ -15,21 +15,15 @@ class StateModel(BaseModel):
 
 
 class BaseStorage(abc.ABC):
-    """Абстрактное хранилище состояния.
-
-    Позволяет сохранять и получать состояние.
-    Способ хранения состояния может варьироваться в зависимости
-    от итоговой реализации. Например, можно хранить информацию
-    в базе данных или в распределённом файловом хранилище.
-    """
+    """Abstract state storage."""
 
     @abc.abstractmethod
     def save_state(self, state: dict[str, Any]) -> None:
-        """Сохранить состояние в хранилище."""
+        """Save state to the storage."""
 
     @abc.abstractmethod
     def retrieve_raw_state(self) -> dict[str, Any]:
-        """Получить состояние из хранилища."""
+        """Get state from the storage."""
 
     def retrieve_state(self) -> StateModel:
         raw_state = self.retrieve_raw_state()
@@ -37,16 +31,15 @@ class BaseStorage(abc.ABC):
 
 
 class JsonFileStorage(BaseStorage):
-    """Реализация хранилища, использующего локальный файл.
+    """State storage using local file.
 
-    Формат хранения: JSON
+    file_format: JSON
     """
 
     def __init__(self, file_path: str) -> None:
         self.file_path = file_path
 
     def save_state(self, state: dict[str, Any]) -> None:
-        """Сохранить состояние в хранилище."""
         with open(self.file_path, "w") as file:
             json.dump(state, file, default=str)
 
@@ -59,18 +52,18 @@ class JsonFileStorage(BaseStorage):
 
 
 class State:
-    """Класс для работы с состояниями."""
+    """."""
 
     def __init__(self, storage: BaseStorage) -> None:
         self.storage = storage
 
     def set_state(self, key: str, value: Any) -> None:
-        """Установить состояние для определённого ключа."""
+        """Set state for given key."""
         state = self.storage.retrieve_raw_state()
         state[key] = value
         self.storage.save_state(state)
 
     def get_state(self, key: str) -> Any:
-        """Получить состояние по определённому ключу."""
+        """Get state by given key."""
         whole_state = self.storage.retrieve_state()
         return getattr(whole_state, key)

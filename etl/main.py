@@ -2,9 +2,9 @@ import logging
 from time import sleep
 
 from config import PostgresConfig, MainConfig
-from extraction.state import State, JsonFileStorage
-from loading.es_loader import ElasticsearchLoader
-from extraction.extractor import FilmworkReader, PersonReader
+from pg_extraction.state import State, JsonFileStorage
+from es_loading.es_loader import ElasticsearchLoader
+from pg_extraction.pg_extractor import FilmworkReader, PersonReader
 from transformer import transform_filmwork
 
 
