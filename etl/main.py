@@ -4,7 +4,7 @@ from time import sleep
 from config import PostgresConfig, MainConfig
 from extraction.state import State, JsonFileStorage
 from loading.es_loader import ElasticsearchLoader
-from extraction.fw_extractor import FilmworkReader, PersonReader
+from extraction.extractor import FilmworkReader, PersonReader
 from transformer import transform_filmwork
 
 
