@@ -1,6 +1,7 @@
 version: '3'
 services:
   postgres:
+    container_name: pg_container
     image: "postgres:13"
     env_file:
       - ./.env
@@ -19,7 +20,9 @@ services:
       timeout: 5s
       retries: 5
     restart: always
+
   elastic:
+    container_name: es_container
     image: ghcr.io/yp-middle-python-24/elasticsearch:8.7.0
     ports:
       - "9200:9200"
@@ -36,7 +39,9 @@ services:
       - $HOME/elasticsearch/data:/usr/share/elasticsearch/data
     depends_on:
       - postgres
+
   etl:
+    container_name: etl_container
     build: etl
     env_file:
       - ./.env

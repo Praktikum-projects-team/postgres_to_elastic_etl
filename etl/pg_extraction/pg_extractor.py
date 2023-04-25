@@ -62,10 +62,10 @@ class FilmworkReader(PostgresReader):
         """read modified data from film_work table"""
 
         logging.info('filmworks reading started')
-        cursor.execute(fw_statement, [self.get_last_datetime('filmwork')])
+        cursor.execute(fw_statement, [self.get_last_datetime('movies_index_modified_filmwork')])
         while data := cursor.fetchmany():
             yield data
-            self.set_last_datetime('filmwork', data[-1]['modified'])
+            self.set_last_datetime('movies_index_modified_filmwork', data[-1]['modified'])
         logging.info('filmworks reading finished')
 
     def _read_modified_secondary_table(self, cursor: RealDictCursor, table: str, fw_statement: str):
@@ -80,7 +80,7 @@ class FilmworkReader(PostgresReader):
                 ORDER BY modified
                 LIMIT 100;         
             '''
-            cursor.execute(entity_statement, [self.get_last_datetime(table)])
+            cursor.execute(entity_statement, [self.get_last_datetime(f'movies_index_modified_{table}')])
             entities = cursor.fetchall()
 
             if not entities:
@@ -89,11 +89,11 @@ class FilmworkReader(PostgresReader):
             new_state = entities[-1]['modified']
 
             entity_ids = [entity['id'] for entity in entities]
-            cursor.execute(fw_statement, [entity_ids, self.get_last_datetime('filmwork')])
+            cursor.execute(fw_statement, [entity_ids, self.get_last_datetime('movies_index_modified_filmwork')])
             while data := cursor.fetchmany():  # как default используется cursor.arraysize, который задан перед вызовом
                 yield data
 
-            self.set_last_datetime(table, new_state)
+            self.set_last_datetime(f'movies_index_modified_{table}', new_state)
         logging.info(f'{table} reading finished')
 
     def _read_all_modified(self, cursor: RealDictCursor):
