@@ -74,5 +74,6 @@ person_statement = '''
     ) as pfw_arr
     RIGHT JOIN content.person p on p.id = pfw_arr.person_id
     WHERE p.modified > %s
-    GROUP BY p.id, full_name, modified;
+    GROUP BY p.id, full_name, modified
+    ORDER BY p.modified;
 '''
