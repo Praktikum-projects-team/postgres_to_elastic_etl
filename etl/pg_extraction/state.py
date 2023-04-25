@@ -7,11 +7,13 @@ from pydantic import BaseModel
 
 
 class StateModel(BaseModel):
+    # Todo: первые три стейта используются для индекcа movies, желательно переименовать в movies_index_modified_{table}
     person: Optional[datetime.datetime] = datetime.datetime.min
     genre: Optional[datetime.datetime] = datetime.datetime.min
     filmwork: Optional[datetime.datetime] = datetime.datetime.min
 
     person_index_modified: Optional[datetime.datetime] = datetime.datetime.min
+    genre_index_modified: Optional[datetime.datetime] = datetime.datetime.min
 
 
 class BaseStorage(abc.ABC):

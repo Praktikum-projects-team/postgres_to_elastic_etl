@@ -9,7 +9,13 @@ import psycopg2
 from psycopg2.extras import RealDictCursor
 
 from config import PostgresConfig
-from pg_extraction.sql_statements import fw_statement, person_fw_statement, genre_fw_statement, person_statement
+from pg_extraction.sql_statements import (
+    fw_statement,
+    genre_statement,
+    person_fw_statement,
+    genre_fw_statement,
+    person_statement
+)
 from pg_extraction.state import State
 
 
@@ -84,7 +90,7 @@ class FilmworkReader(PostgresReader):
 
             entity_ids = [entity['id'] for entity in entities]
             cursor.execute(fw_statement, [entity_ids, self.get_last_datetime('filmwork')])
-            while data := cursor.fetchmany():  # как default использует cursor.arraysize, который я задаю перед вызовом
+            while data := cursor.fetchmany():  # как default используется cursor.arraysize, который задан перед вызовом
                 yield data
 
             self.set_last_datetime(table, new_state)
@@ -111,3 +117,20 @@ class PersonReader(PostgresReader):
             yield data
             self.set_last_datetime(modified_datetimes[-1])
         logging.info('person reading finished')
+
+
+class GenreReader(PostgresReader):
+    def get_last_datetime(self) -> datetime.datetime:
+        return self.state.get_state(key='genre_index_modified')
+
+    def set_last_datetime(self, last_datetime: str):
+        self.state.set_state(key='genre_index_modified', value=last_datetime)
+
+    def _read_all_modified(self, cursor: RealDictCursor) -> Generator:
+        logging.info('genre reading started')
+        cursor.execute(genre_statement, [self.get_last_datetime()])
+        while data := cursor.fetchmany():
+            modified_datetimes = [genre.pop('modified') for genre in data]
+            yield data
+            self.set_last_datetime(modified_datetimes[-1])
+        logging.info('genre reading finished')

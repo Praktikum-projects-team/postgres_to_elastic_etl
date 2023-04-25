@@ -4,7 +4,7 @@ from time import sleep
 from config import PostgresConfig, MainConfig
 from pg_extraction.state import State, JsonFileStorage
 from es_loading.es_loader import ElasticsearchLoader
-from pg_extraction.pg_extractor import FilmworkReader, PersonReader
+from pg_extraction.pg_extractor import FilmworkReader, GenreReader, PersonReader
 from transformer import transform_filmwork
 
 
@@ -30,6 +30,7 @@ if __name__ == '__main__':
 
     fw_reader = FilmworkReader(connection_params=PostgresConfig(), state=state, batch_size=config.batch_size)
     person_reader = PersonReader(connection_params=PostgresConfig(), state=state, batch_size=config.batch_size)
+    genre_reader = GenreReader(connection_params=PostgresConfig(), state=state, batch_size=config.batch_size)
 
     loader = ElasticsearchLoader(config.es_host)
 
@@ -41,5 +42,9 @@ if __name__ == '__main__':
         logging.info('person etl started')
         run_etl(pg_reader=person_reader, es_loader=loader, es_index='person')
         logging.info('person etl finished')
+
+        logging.info('genre etl started')
+        run_etl(pg_reader=genre_reader, es_loader=loader, es_index='genre')
+        logging.info('genre etl finished')
 
         sleep(config.etl_run_interval)

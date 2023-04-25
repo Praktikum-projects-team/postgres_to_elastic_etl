@@ -136,7 +136,42 @@ persons_mappings = {
     }
 }
 
+genre_mappings = {
+    "dynamic": "strict",
+    "properties": {
+        "id": {
+            "type": "keyword"
+        },
+        "name": {
+            "type": "text",
+            "analyzer": "ru_en",
+            "fields": {
+                "raw": {
+                    "type": "keyword"
+                }
+            }
+        },
+        "filmworks": {
+            "type": "nested",
+            "dynamic": "strict",
+            "properties": {
+                "id": {
+                    "type": "keyword"
+                },
+                "title": {
+                    "type": "text",
+                    "analyzer": "ru_en"
+                },
+                "imdb_rating": {
+                    "type": "float"
+                }
+            }
+        }
+    }
+}
+
 index_mappings = {
     "movies": movies_mappings,
     "person": persons_mappings,
+    "genre": genre_mappings
 }
