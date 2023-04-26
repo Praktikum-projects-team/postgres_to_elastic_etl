@@ -74,7 +74,8 @@ person_statement = '''
     ) as pfw_arr
     RIGHT JOIN content.person p on p.id = pfw_arr.person_id
     WHERE p.modified > %s
-    GROUP BY p.id, full_name, modified;
+    GROUP BY p.id, full_name, modified
+    ORDER BY p.modified;
 '''
 
 
@@ -89,16 +90,12 @@ genre_statement = '''
             'title', fw.title, 
             'imdb_rating', fw.rating
         )
-    ) as filmworks
+    ) AS filmworks
     FROM 
         content.genre g
-        JOIN content.genre_film_work gfw ON gfw.genre_id = g.id
-        JOIN content.film_work fw ON fw.id = gfw.film_work_id
-    WHERE 
-        g.modified > %s
-    GROUP BY 
-        g.id, 
-        g.name
-    ORDER BY 
-        g.name;
+        LEFT JOIN content.genre_film_work gfw ON gfw.genre_id = g.id
+        LEFT JOIN content.film_work fw ON fw.id = gfw.film_work_id
+    WHERE g.modified > %s
+    GROUP BY g.id, g.name
+    ORDER BY g.modified;
 '''
