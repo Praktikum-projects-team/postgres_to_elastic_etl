@@ -77,3 +77,25 @@ person_statement = '''
     GROUP BY p.id, full_name, modified
     ORDER BY p.modified;
 '''
+
+
+genre_statement = '''
+    SELECT 
+    g.id, 
+    g.name,
+    g.modified,
+    json_agg(
+        jsonb_build_object(
+            'id', fw.id, 
+            'title', fw.title, 
+            'imdb_rating', fw.rating
+        )
+    ) AS films
+    FROM 
+        content.genre g
+        LEFT JOIN content.genre_film_work gfw ON gfw.genre_id = g.id
+        LEFT JOIN content.film_work fw ON fw.id = gfw.film_work_id
+    WHERE g.modified > %s
+    GROUP BY g.id, g.name
+    ORDER BY g.modified;
+'''
