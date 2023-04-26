@@ -90,7 +90,7 @@ genre_statement = '''
             'title', fw.title, 
             'imdb_rating', fw.rating
         )
-    ) AS filmworks
+    ) AS films
     FROM 
         content.genre g
         LEFT JOIN content.genre_film_work gfw ON gfw.genre_id = g.id

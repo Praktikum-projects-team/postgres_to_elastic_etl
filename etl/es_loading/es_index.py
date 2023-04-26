@@ -151,7 +151,7 @@ genre_mappings = {
                 }
             }
         },
-        "filmworks": {
+        "films": {
             "type": "nested",
             "dynamic": "strict",
             "properties": {
