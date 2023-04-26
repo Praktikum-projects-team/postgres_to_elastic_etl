@@ -173,5 +173,5 @@ genre_mappings = {
 index_mappings = {
     "movies": movies_mappings,
     "person": persons_mappings,
-    "genre": genre_mappings
+    "genre": genre_mappings,
 }
