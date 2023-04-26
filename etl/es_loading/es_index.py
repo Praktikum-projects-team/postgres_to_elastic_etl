@@ -150,22 +150,6 @@ genre_mappings = {
                     "type": "keyword"
                 }
             }
-        },
-        "films": {
-            "type": "nested",
-            "dynamic": "strict",
-            "properties": {
-                "id": {
-                    "type": "keyword"
-                },
-                "title": {
-                    "type": "text",
-                    "analyzer": "ru_en"
-                },
-                "imdb_rating": {
-                    "type": "float"
-                }
-            }
         }
     }
 }
