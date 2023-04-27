@@ -1,8 +1,4 @@
-from pydantic import (
-    BaseSettings,
-    Field,
-    FilePath
-)
+from pydantic import BaseSettings, Field
 
 
 class PostgresConfig(BaseSettings):
@@ -18,4 +14,3 @@ class MainConfig(BaseSettings):
     batch_size: int = Field(..., env='BATCH_SIZE')
     state_file: str = Field(..., env='STATE_FILE')
     etl_run_interval: int = Field(..., env='ETL_RUN_INTERVAL')  # seconds
-
