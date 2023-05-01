@@ -64,6 +64,10 @@ class FilmworkReader(PostgresReader):
         logging.info('filmworks reading started')
         cursor.execute(fw_statement, [self.get_last_datetime('movies_index_modified_filmwork')])
         while data := cursor.fetchmany():
+            logging.info('')
+            logging.info('&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&')
+            logging.info(f'data: {data}')
+            logging.info('')
             yield data
             self.set_last_datetime('movies_index_modified_filmwork', data[-1]['modified'])
         logging.info('filmworks reading finished')
