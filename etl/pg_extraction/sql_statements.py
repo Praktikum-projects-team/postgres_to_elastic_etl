@@ -14,7 +14,15 @@ select_fw_part = '''
        ) FILTER (WHERE p.id is not null),
        '[]'
     ) as persons,
-    array_agg(DISTINCT g.name) as genres,
+    COALESCE (
+       json_agg(
+           DISTINCT jsonb_build_object(
+               'name', g.name,
+               'id', g.id
+           )
+       ) FILTER (WHERE g.id is not null),
+       '[]'
+    ) as genres,
     fw.modified as modified
     FROM content.film_work fw
 '''
