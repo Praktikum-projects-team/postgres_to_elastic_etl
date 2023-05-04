@@ -36,7 +36,7 @@ services:
       timeout: 30s
       retries: 2
     volumes:
-      - $HOME/elasticsearch/data:/usr/share/elasticsearch/data
+      - $HOME/elasticsearch/data:/var/lib/elasticsearch/data
     depends_on:
       - postgres
 
